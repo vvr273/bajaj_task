@@ -1,57 +1,59 @@
-import express from "express";
-import serverless from "serverless-http";
+export default function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ is_success: false, message: "Method Not Allowed" });
+  }
 
-const app = express();
-app.use(express.json());
-
-app.post("/bfhl", (req, res) => {
   try {
-    const data = req.body.data || [];
+    const { data } = req.body;
 
-    let odd_numbers = [];
-    let even_numbers = [];
-    let alphabets = [];
-    let special_characters = [];
+    if (!data || !Array.isArray(data)) {
+      return res.status(400).json({ is_success: false, message: "Invalid input" });
+    }
+
+    const user_id = "john_doe_17091999";
+    const email = "john@xyz.com";
+    const roll_number = "ABCD123";
+
+    const odd_numbers = [];
+    const even_numbers = [];
+    const alphabets = [];
+    const special_characters = [];
     let sum = 0;
+    let concatString = "";
 
     data.forEach(item => {
-      if (!isNaN(item) && item.trim() !== "") {
-        let num = parseInt(item, 10);
-        if (num % 2 === 0) even_numbers.push(item); 
-        else odd_numbers.push(item);
+      if (!isNaN(item)) {
+        const num = parseInt(item);
         sum += num;
+        if (num % 2 === 0) even_numbers.push(item.toString());
+        else odd_numbers.push(item.toString());
       } else if (/^[a-zA-Z]+$/.test(item)) {
         alphabets.push(item.toUpperCase());
+        concatString += item;
       } else {
         special_characters.push(item);
       }
     });
 
-    // Build concat string (reverse order, alternating caps)
-    let concat_string = alphabets
-      .slice() // copy
+    concatString = concatString
+      .split("")
       .reverse()
-      .map((ch, i) => (i % 2 === 0 ? ch[0].toUpperCase() + ch.slice(1).toLowerCase() : ch.toLowerCase()))
+      .map((c, i) => (i % 2 === 0 ? c.toUpperCase() : c.toLowerCase()))
       .join("");
 
     res.status(200).json({
       is_success: true,
-      user_id: "john_doe_17091999", 
-      email: "john@xyz.com",
-      roll_number: "ABCD123",
+      user_id,
+      email,
+      roll_number,
       odd_numbers,
       even_numbers,
       alphabets,
       special_characters,
       sum: sum.toString(),
-      concat_string,
+      concat_string: concatString
     });
-  } catch (error) {
-    res.status(500).json({
-      is_success: false,
-      message: error.message,
-    });
+  } catch (err) {
+    res.status(500).json({ is_success: false, message: "Server Error" });
   }
-});
-
-export default serverless(app);
+}
