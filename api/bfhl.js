@@ -46,4 +46,4 @@ app.post("/bfhl", (req, res) => {
   });
 });
 
-export const handler = serverless(app);
+export default serverless(app);
