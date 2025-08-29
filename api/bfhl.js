@@ -4,7 +4,7 @@ import serverless from "serverless-http";
 const app = express();
 app.use(express.json());
 
-app.post("/bfhl", (req, res) => {
+app.post("/", (req, res) => {
   const data = req.body.data || [];
 
   let odd_numbers = [];
