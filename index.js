@@ -1,4 +1,5 @@
 import express from "express";
+import serverless from "serverless-http";
 
 const app = express();
 app.use(express.json());
@@ -25,8 +26,6 @@ app.post("/bfhl", (req, res) => {
     }
   });
 
-  // alphabets remain in original data order
-  // concatenated string in reverse with alternating caps
   let concat_string = [...alphabets]
     .map(ch => ch.toLowerCase())
     .reverse()
@@ -47,4 +46,5 @@ app.post("/bfhl", (req, res) => {
   });
 });
 
-app.listen(3000, () => console.log("Server running on port 3000"));
+// Export for Vercel
+export const handler = serverless(app);
