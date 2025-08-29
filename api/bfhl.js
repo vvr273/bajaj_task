@@ -22,16 +22,19 @@ export default function handler(req, res) {
     let concatString = "";
 
     data.forEach(item => {
-      if (!isNaN(item)) {
-        const num = parseInt(item);
+      const trimmed = item.toString().trim();
+      if (trimmed === "") return; // skip empty or whitespace strings
+
+      if (!isNaN(trimmed)) {
+        const num = parseInt(trimmed, 10);
         sum += num;
-        if (num % 2 === 0) even_numbers.push(item.toString());
-        else odd_numbers.push(item.toString());
-      } else if (/^[a-zA-Z]+$/.test(item)) {
-        alphabets.push(item.toUpperCase());
-        concatString += item;
+        if (num % 2 === 0) even_numbers.push(trimmed);
+        else odd_numbers.push(trimmed);
+      } else if (/^[a-zA-Z]+$/.test(trimmed)) {
+        alphabets.push(trimmed.toUpperCase());
+        concatString += trimmed;
       } else {
-        special_characters.push(item);
+        special_characters.push(trimmed);
       }
     });
 
